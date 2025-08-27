@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ElevateED: Presentation Prototype</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; color: #1e293b; }
+        .section-title::after { content: ''; display: block; width: 60px; height: 4px; background-color: #4f46e5; margin: 16px auto 0; border-radius: 2px; }
+        .slide { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 1rem; }
+        .slide-heading::after { content: ''; display: block; width: 40px; height: 3px; background-color: #4f46e5; margin: 8px auto 0; border-radius: 1.5px; }
+        .sim-container { position: relative; width: 100%; max-width: 400px; margin-left: auto; margin-right: auto; }
+        .sim-canvas { border: 2px solid #94a3b8; background-color: #1e293b; border-radius: 0.5rem; }
+        .app-phone { width: 100%; max-width: 320px; aspect-ratio: 9 / 16; margin: 0 auto; background-color: #000; border: 8px solid #000; border-radius: 2rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); position: relative; overflow: hidden; }
+        .app-screen { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: #f8fafc; transition: all 0.3s ease-in-out; }
+        @keyframes slide-in-up { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .animate-slide-in-up { animation: slide-in-up 0.5s ease-out forwards; }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800">
+
+    <header class="fixed top-0 left-0 right-0 z-50 py-4 bg-white/80 backdrop-blur-lg shadow-md">
+        <div class="container mx-auto px-6 text-center">
+            <h1 class="text-2xl font-bold">Elevate<span class="text-indigo-600">ED</span> Presentation</h1>
+        </div>
+    </header>
+
+    <main class="pt-20">
+        <!-- Slide 1: Introduction -->
+        <section id="intro-slide" class="slide bg-white text-center">
+            <div class="container mx-auto px-6">
+                <h2 class="text-4xl md:text-6xl font-bold leading-tight mb-4">A Smarter Way Up</h2>
+                <p class="text-xl md:text-2xl text-slate-600 max-w-3xl mx-auto">
+                    Transforming the single-lift building from a point of frustration to a model of efficiency.
+                </p>
+            </div>
+        </section>
+
+        <!-- Slide 2: The Problem -->
+        <section id="problem-slide" class="slide bg-slate-50 py-16 text-center">
+            <div class="container mx-auto px-6">
+                <h3 class="text-3xl font-bold section-title mb-10">The Challenge: Inefficient Lifts</h3>
+                <p class="text-lg text-slate-600 max-w-3xl mx-auto mb-10">
+                    Traditional elevators, especially in single-lift buildings, operate on reactive logic. They don't know where you're going or who else is waiting. This leads to wasted time, energy, and a frustrating experience for everyone. Our solution addresses this by adding a layer of intelligence.
+                </p>
+            </div>
+        </section>
+
+        <!-- Slide 3: FCFS Simulation -->
+        <section id="fcfs-slide" class="slide py-16 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center">
+                    <h3 class="text-3xl font-bold slide-heading mb-4">1. First-Come, First-Served (FCFS)</h3>
+                    <p class="text-lg text-slate-600 max-w-3xl mx-auto mb-8">
+                       Think of this as a simple **To-Do List**. The elevator completes tasks in the exact order they're added, no matter how inefficient. It has no foresight and can't group trips, leading to a lot of wasted movement.
+                    </p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8 items-center justify-center">
+                    <div class="sim-container">
+                        <canvas id="fcfs-canvas" class="sim-canvas" width="300" height="450"></canvas>
+                    </div>
+                    <div class="flex flex-col space-y-4">
+                        <div class="bg-slate-50 p-6 rounded-lg border border-slate-200">
+                             <h4 class="font-bold text-lg text-center mb-3">Example Scenario</h4>
+                             <p class="text-sm text-slate-600 mb-4">Imagine these requests come in:</p>
+                             <ol class="list-decimal list-inside space-y-2 text-sm">
+                                 <li><span class="font-semibold">Request A:</span> Floor 8 to Floor 2 (Down)</li>
+                                 <li><span class="font-semibold">Request B:</span> Floor 7 to Floor 4 (Down)</li>
+                                 <li><span class="font-semibold">Request C:</span> Floor 1 to Floor 3 (Up)</li>
+                             </ol>
+                             <div class="mt-4 p-3 bg-red-100 text-red-800 rounded-md text-sm">
+                                 <p><strong class="font-semibold">The Inefficient Path:</strong> The elevator goes G ➝ 8 (Pick up A), down to 2 (Drop off A). Then it goes back up to 7 (Pick up B), down to 4 (Drop off B). Finally, it travels all the way down to 1 (Pick up C) and up to 3 (Drop off C). This is maximum travel for minimum efficiency.</p>
+                             </div>
+                        </div>
+                        <div class="text-left">
+                            <p class="font-bold text-lg text-center">Add Your Request</p>
+                            <div class="grid grid-cols-2 gap-4 mt-4">
+                                <div>
+                                    <label for="fcfs-from" class="block text-sm font-medium text-slate-700">From Floor</label>
+                                    <select id="fcfs-from" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"></select>
+                                </div>
+                                <div>
+                                    <label for="fcfs-to" class="block text-sm font-medium text-slate-700">To Floor</label>
+                                    <select id="fcfs-to" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"></select>
+                                </div>
+                            </div>
+                            <button id="add-fcfs-btn" class="mt-4 w-full bg-indigo-600 text-white font-bold py-3 rounded-lg hover:bg-indigo-700 transition shadow-md">Add Request</button>
+                            <div class="mt-4 bg-slate-100 p-4 rounded-lg text-center">
+                                <p class="text-sm font-medium text-slate-500">Your Estimated Wait Time</p>
+                                <p id="fcfs-eta" class="text-2xl font-bold text-indigo-600">--</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 4: SCAN Simulation -->
+        <section id="scan-slide" class="slide py-16 bg-slate-50">
+            <div class="container mx-auto px-6">
+                <div class="text-center">
+                    <h3 class="text-3xl font-bold slide-heading mb-4">2. The SCAN Algorithm</h3>
+                    <p class="text-lg text-slate-600 max-w-3xl mx-auto mb-8">
+                        This is smarter, like a **Bus Route**. The elevator travels all the way to the top, servicing any calls along the way, and then all the way to the bottom. It's more efficient than FCFS but can still lead to long waits if you're going against the main flow of traffic.
+                    </p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8 items-center justify-center">
+                    <div class="sim-container">
+                        <canvas id="scan-canvas" class="sim-canvas" width="300" height="450"></canvas>
+                    </div>
+                    <div class="flex flex-col space-y-4">
+                         <div class="bg-white p-6 rounded-lg border border-slate-200">
+                             <h4 class="font-bold text-lg text-center mb-3">Example Scenario</h4>
+                             <p class="text-sm text-slate-600 mb-4">Using the same requests:</p>
+                              <ol class="list-decimal list-inside space-y-2 text-sm">
+                                 <li><span class="font-semibold">Request A:</span> Floor 8 to Floor 2 (Down)</li>
+                                 <li><span class="font-semibold">Request B:</span> Floor 7 to Floor 4 (Down)</li>
+                                 <li><span class="font-semibold">Request C:</span> Floor 1 to Floor 3 (Up)</li>
+                             </ol>
+                             <div class="mt-4 p-3 bg-yellow-100 text-yellow-800 rounded-md text-sm">
+                                 <p><strong class="font-semibold">The Better, But Flawed Path:</strong> The elevator goes G ➝ 8 to get Request A, setting its direction to **DOWN**. It sweeps down, picking up B at 7, dropping off B at 4, and dropping off A at 2. It **ignores** Request C at floor 1 because it's an "up" call. Only after reaching the bottom does it reverse to go G ➝ 1 (Pick up C). Person C had to wait for the entire round trip!</p>
+                             </div>
+                        </div>
+                        <div class="text-left">
+                            <p class="font-bold text-lg text-center">Add Your Request</p>
+                            <div class="grid grid-cols-2 gap-4 mt-4">
+                                <div>
+                                    <label for="scan-from" class="block text-sm font-medium text-slate-700">From Floor</label>
+                                    <select id="scan-from" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"></select>
+                                </div>
+                                <div>
+                                    <label for="scan-to" class="block text-sm font-medium text-slate-700">To Floor</label>
+                                    <select id="scan-to" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"></select>
+                                </div>
+                            </div>
+                            <button id="add-scan-btn" class="mt-4 w-full bg-indigo-600 text-white font-bold py-3 rounded-lg hover:bg-indigo-700 transition shadow-md">Add Request</button>
+                            <div class="mt-4 bg-slate-100 p-4 rounded-lg text-center">
+                                <p class="text-sm font-medium text-slate-500">Your Estimated Wait Time</p>
+                                <p id="scan-eta" class="text-2xl font-bold text-indigo-600">--</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 5: AI Explanation -->
+        <section id="ai-explanation-slide" class="slide py-16 bg-white text-left">
+            <div class="container mx-auto px-6 max-w-4xl">
+                <h3 class="text-3xl font-bold slide-heading mb-8 text-center">How the ElevateED AI Thinks</h3>
+                <p class="text-lg text-slate-600 mb-10 text-center max-w-3xl mx-auto">
+                    Unlike basic elevators, our AI acts like a **Smart Taxi Driver**. Instead of blindly following orders, it constantly asks: "What is the cheapest and fastest move I can make right now for **everyone**?" It determines the "cost" of every possible stop and always chooses the one with the lowest score.
+                </p>
+                <div class="grid md:grid-cols-2 gap-x-12 gap-y-8">
+                    <div>
+                        <h4 class="font-bold text-xl text-indigo-600 mb-3">The Key Ingredients (The Data)</h4>
+                        <ul class="list-none space-y-3 text-slate-700">
+                            <li class="flex items-start"><span class="mr-3 text-xl">📍</span><div><strong>Elevator's Current Location:</strong> Where is the car right now?</div></li>
+                            <li class="flex items-start"><span class="mr-3 text-xl">🎯</span><div><strong>Passenger Destinations:</strong> Where are the people <em>inside</em> the elevator going?</div></li>
+                            <li class="flex items-start"><span class="mr-3 text-xl">🕒</span><div><strong>Call Requests:</strong> Where are people <em>waiting</em>, and for how long?</div></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-xl text-indigo-600 mb-3">The Secret Sauce (The Cost Function)</h4>
+                        <p class="text-slate-700">
+                            The AI scores every potential stop by weighing these factors:
+                        </p>
+                    </div>
+                </div>
+                <div class="mt-8 bg-slate-50 p-6 rounded-lg grid md:grid-cols-2 gap-6">
+                    <div><p class="font-semibold flex items-center"><span class="text-xl mr-2">📏</span> Travel Time Cost</p><p class="text-sm text-slate-600 pl-8">Lower cost for closer stops.</p></div>
+                    <div><p class="font-semibold flex items-center text-emerald-600"><span class="text-xl mr-2">😊</span> Wait Time Relief</p><p class="text-sm text-slate-600 pl-8">A "bonus" for picking up people who have waited a long time.</p></div>
+                    <div><p class="font-semibold flex items-center text-red-600"><span class="text-xl mr-2">😠</span> Journey Time Cost</p><p class="text-sm text-slate-600 pl-8">A penalty for detours that delay current passengers.</p></div>
+                    <div><p class="font-semibold flex items-center text-red-600"><span class="text-xl mr-2">🔄</span> Direction Penalty</p><p class="text-sm text-slate-600 pl-8">A penalty for reversing direction unnecessarily.</p></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 6: AI Simulation -->
+        <section id="ai-slide" class="slide py-16 bg-slate-50">
+             <div class="container mx-auto px-6">
+                 <div class="text-center">
+                    <h3 class="text-3xl font-bold slide-heading mb-4">3. The ElevateED AI</h3>
+                    <p class="text-lg text-slate-600 max-w-3xl mx-auto mb-8">
+                        By weighing all factors, the AI finds the optimal path in real-time. It's not just following a list or a route; it's making intelligent, dynamic decisions to minimize the total time wasted for everyone.
+                    </p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8 items-center justify-center">
+                    <div class="sim-container">
+                        <canvas id="ai-canvas" class="sim-canvas" width="300" height="450"></canvas>
+                    </div>
+                    <div class="flex flex-col space-y-4">
+                         <div class="bg-white p-6 rounded-lg border border-slate-200">
+                             <h4 class="font-bold text-lg text-center mb-3">Example Scenario</h4>
+                             <p class="text-sm text-slate-600 mb-4">With the same requests:</p>
+                              <ol class="list-decimal list-inside space-y-2 text-sm">
+                                 <li><span class="font-semibold">Request A:</span> Floor 8 to Floor 2 (Down)</li>
+                                 <li><span class="font-semibold">Request B:</span> Floor 7 to Floor 4 (Down)</li>
+                                 <li><span class="font-semibold">Request C:</span> Floor 1 to Floor 3 (Up)</li>
+                             </ol>
+                             <div class="mt-4 p-3 bg-green-100 text-green-800 rounded-md text-sm">
+                                 <p><strong class="font-semibold">The Optimal Path:</strong> The AI goes G ➝ 8 (Pick up A). It sees both B and C. It knows grouping the "down" trips is cheapest, so it goes 8 ➝ 7 (Pick up B). It then efficiently drops off B at 4 and A at 2. Now that all "down" tasks are done, its lowest cost move is to go to 1 for Request C. This intelligent grouping minimizes total travel and wait time.</p>
+                             </div>
+                        </div>
+                        <div class="text-left">
+                            <p class="font-bold text-lg text-center">Add Your Request</p>
+                            <div class="grid grid-cols-2 gap-4 mt-4">
+                                <div>
+                                    <label for="ai-from" class="block text-sm font-medium text-slate-700">From Floor</label>
+                                    <select id="ai-from" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"></select>
+                                </div>
+                                <div>
+                                    <label for="ai-to" class="block text-sm font-medium text-slate-700">To Floor</label>
+                                    <select id="ai-to" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"></select>
+                                </div>
+                            </div>
+                            <button id="add-ai-btn" class="mt-4 w-full bg-indigo-600 text-white font-bold py-3 rounded-lg hover:bg-indigo-700 transition shadow-md">Add Request</button>
+                            <div class="mt-4 bg-slate-100 p-4 rounded-lg text-center">
+                                <p class="text-sm font-medium text-slate-500">Your Estimated Wait Time</p>
+                                <p id="ai-eta" class="text-2xl font-bold text-indigo-600">--</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 7: App Prototype -->
+        <section id="app-slide" class="slide py-16 bg-white text-center">
+            <div class="container mx-auto px-6">
+                <h3 class="text-3xl font-bold slide-heading mb-8">The App: Your Personal Terminal</h3>
+                <p class="text-lg text-slate-600 max-w-2xl mx-auto mb-10">
+                    The ElevateED app is the key to providing the AI with the crucial destination data it needs to work its magic. It's a touchless, intuitive interface for a modern campus.
+                </p>
+                 <div id="app-container" class="w-full max-w-sm mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border-8 border-gray-800 h-[600px] flex flex-col">
+                    <div class="flex-grow bg-gray-50 relative overflow-hidden">
+                        <div id="app-home-page" class="app-page p-5">
+                            <div class="flex justify-between items-center"><div><p class="text-gray-500">Good Morning,</p><h3 class="text-2xl font-bold">Rohan!</h3></div><img src="https://i.pravatar.cc/48?u=rohan" alt="User avatar" class="w-12 h-12 rounded-full" onerror="this.onerror=null;this.src='https://placehold.co/48x48/E0E0E0/000000?text=R';"></div>
+                            <div class="mt-4 bg-emerald-100 text-emerald-800 p-4 rounded-xl text-center"><p class="font-bold">✨ Fast Track Your Day!</p><p class="text-sm mb-3">Elevator wait is ~4 mins. Stairs are faster!</p><button id="take-stairs-btn" class="bg-emerald-500 text-white font-bold py-2 px-4 rounded-lg w-full hover:bg-emerald-600">Take Stairs & Earn 40 Points</button></div>
+                            <div id="app-idle-state" class="text-center mt-8"><div class="w-24 h-24 mx-auto rounded-full bg-indigo-100 flex items-center justify-center mb-4"><p class="text-4xl">🏢</p></div><h4 class="text-xl font-bold">Where are you headed?</h4><button id="request-elevator-btn" class="mt-4 bg-indigo-600 text-white font-bold py-3 px-8 rounded-full text-lg hover:bg-indigo-700 transition shadow-lg">Request Elevator</button></div>
+                            <div id="app-queue-state" class="hidden text-center mt-8"><div class="w-24 h-24 mx-auto rounded-full bg-gray-200 flex items-center justify-center mb-4 relative"><p class="text-4xl">⏳</p></div><h4 class="text-xl font-bold">You're in the queue!</h4><p class="text-gray-500">Estimated Arrival:</p><p id="app-eta" class="text-4xl font-bold text-indigo-600 my-2">02:30</p><button id="cancel-request-btn" class="mt-2 text-sm text-red-500 hover:underline">Cancel Request</button></div>
+                        </div>
+                        <div id="app-challenge-page" class="app-page hidden p-5"></div>
+                        <div id="app-impact-page" class="app-page hidden p-5"></div>
+                        <div id="app-rewards-page" class="app-page hidden p-5"></div>
+                        <div id="app-notification" class="hidden absolute bottom-20 left-5 right-5 bg-indigo-600 text-white text-center py-3 px-4 rounded-lg shadow-lg"></div>
+                    </div>
+                    <nav class="bg-white border-t border-gray-200 grid grid-cols-4 text-center">
+                        <button data-page="app-home-page" class="app-nav-btn p-3 text-indigo-600"><p class="text-2xl mx-auto">🏠</p><span class="text-xs">Home</span></button>
+                        <button data-page="app-challenge-page" class="app-nav-btn p-3 text-gray-500"><p class="text-2xl mx-auto">🏆</p><span class="text-xs">Challenges</span></button>
+                        <button data-page="app-impact-page" class="app-nav-btn p-3 text-gray-500"><p class="text-2xl mx-auto">📈</p><span class="text-xs">My Impact</span></button>
+                        <button data-page="app-rewards-page" class="app-nav-btn p-3 text-gray-500"><p class="text-2xl mx-auto">🎁</p><span class="text-xs">Rewards</span></button>
+                    </nav>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 8: Why We Win -->
+        <section id="why-we-win-slide" class="slide py-16 bg-slate-50 text-center">
+            <div class="container mx-auto px-6 max-w-4xl">
+                <h3 class="text-3xl md:text-4xl font-bold section-title mb-10">Why Our Solution Wins</h3>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-white p-6 rounded-lg text-center shadow-md">
+                        <div class="text-4xl mb-4">🧠</div>
+                        <h4 class="text-xl font-bold mb-2">Proactive, Not Reactive</h4>
+                        <p class="text-slate-600">By predicting traffic with AI, our system anticipates demand and positions the elevator where it's needed next, cutting wait times before a call is even made.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg text-center shadow-md">
+                        <div class="text-4xl mb-4">✅</div>
+                        <h4 class="text-xl font-bold mb-2">Solves the Core Problem</h4>
+                        <p class="text-slate-600">Classic algorithms fail because they lack destination data. Our app-based system gathers this crucial information upfront, enabling true, intelligent optimization.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg text-center shadow-md">
+                        <div class="text-4xl mb-4">🌍</div>
+                        <h4 class="text-xl font-bold mb-2">Holistic Value</h4>
+                        <p class="text-slate-600">This isn't just about speed. Our solution enhances user experience, improves building throughput, and reduces energy consumption, delivering value to both passengers and building managers.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 9: The Future -->
+        <section id="future-slide" class="slide py-16 bg-slate-800 text-white text-center">
+            <div class="container mx-auto px-6 max-w-3xl">
+                <h3 class="text-3xl md:text-4xl font-bold slide-heading mb-8">The Future is Ropeless</h3>
+                <p class="text-lg text-slate-300 mb-8">
+                    The next frontier in elevator technology is already here. Systems like the **MULTI ropeless elevator** use magnetic levitation to move multiple cars in a single shaft—both vertically and horizontally. This transforms an elevator system into an in-building metro, solving the problem not just with a smarter algorithm, but by revolutionizing the hardware itself.
+                </p>
+                <p class="font-semibold text-indigo-400">Our AI-driven, data-centric approach is the essential software foundation for controlling these next-generation systems.</p>
+            </div>
+        </section>
+
+    </main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    // --- Global Simulation Constants ---
+    const NUM_FLOORS = 10;
+    const DOOR_OPEN_DURATION = 60; // frames
+
+    // --- App Mock Data ---
+    const userData = { name: 'Rohan', points: 640, floorsClimbed: 112, co2Saved: 1.2, weeklyClimbs: [15, 20, 12, 25, 18, 22, 0], earnedBadges: ['first_climb', 'mountain_goat'] };
+    const leaderboardData = [ { name: 'Sara K.', points: 1250, avatar: 'sara' }, { name: 'Mike L.', points: 1100, avatar: 'mike' }, { name: 'Chen W.', points: 980, avatar: 'chen' }, { name: 'Emily R.', points: 850, avatar: 'emily' }, { name: 'David P.', points: 780, avatar: 'david' }, { name: 'Maria G.', points: 710, avatar: 'maria' }, { name: 'Rohan', points: 640, avatar: 'rohan' }, ];
+    const allBadges = { 'first_climb': { emoji: '🏅', name: 'First Climb' }, 'mountain_goat': { emoji: '🧗', name: 'Mountain Goat', desc: 'Climb 100 floors' }, 'streak_week': { emoji: '⚡️', name: 'Streak Week', desc: 'Climb stairs 5 days in a row' }, 'sky_walker': { emoji: '🚀', name: 'Sky Walker', desc: 'Climb 500 floors' } };
+    const rewardsData = [ { id: 'coffee1', name: 'Free Coffee', vendor: 'Campus Cafe', points: 200, icon: '☕' }, { id: 'sandwich1', name: '50% Off Sandwich', vendor: 'Main Canteen', points: 350, icon: '🥪' }, { id: 'meal1', name: 'Free Lunch Combo', vendor: 'Main Canteen', points: 1000, icon: '🍱' }, { id: 'smoothie1', name: 'BOGO Smoothie', vendor: 'Juice Bar', points: 400, icon: '🥤' } ];
+    let impactChart = null;
+
+    // --- Elevator Simulation Class ---
+    class ElevatorSimulation {
+        constructor(canvasId, algorithm) {
+            this.canvas = document.getElementById(canvasId);
+            this.ctx = this.canvas.getContext('2d');
+            this.algorithm = algorithm;
+            this.FLOOR_HEIGHT = this.canvas.height / NUM_FLOORS;
+            this.isRunning = false;
+            this.trafficInterval = null;
+            
+            this.maxSpeed = (canvasId === 'ai-canvas') ? 3.0 : 1.5;
+            this.easeFactor = 0.1;
+
+            this.reset();
+            this.draw(); 
+        }
+
+        start() {
+            if (this.isRunning) return;
+            this.isRunning = true;
+            this.gameLoop();
+
+            let intervalMin = 3000;
+            let intervalRandom = 2000;
+
+            if (this.canvas.id === 'fcfs-canvas' || this.canvas.id === 'scan-canvas') {
+                intervalMin = 2000;
+                intervalRandom = 1500;
+            }
+
+            const generateTraffic = () => {
+                this.addRandomRequest();
+                const nextInterval = intervalMin + Math.random() * intervalRandom;
+                if (this.isRunning) {
+                     this.trafficInterval = setTimeout(generateTraffic, nextInterval);
+                }
+            };
+            
+            this.trafficInterval = setTimeout(generateTraffic, intervalMin + Math.random() * intervalRandom);
+        }
+
+        reset() {
+            this.elevator = { y: this.canvas.height - this.FLOOR_HEIGHT, currentFloor: 0, targetFloor: 0, state: 'idle', direction: 0, passengers: [], doorTimer: 0 };
+            this.requests = [];
+        }
+
+        draw() {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            this.ctx.fillStyle = '#1e293b';
+            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            const shaftX = this.canvas.width / 2 - 35;
+            this.ctx.fillStyle = '#334155';
+            this.ctx.fillRect(shaftX, 0, 70, this.canvas.height);
+            for (let i = 0; i < NUM_FLOORS; i++) {
+                const y = i * this.FLOOR_HEIGHT;
+                this.ctx.strokeStyle = '#475569';
+                this.ctx.beginPath(); this.ctx.moveTo(0, y); this.ctx.lineTo(this.canvas.width, y); this.ctx.stroke();
+                this.ctx.fillStyle = '#cbd5e1'; this.ctx.font = '14px Inter';
+                const floorNum = NUM_FLOORS - 1 - i;
+                this.ctx.fillText(floorNum === 0 ? 'G' : floorNum, shaftX - 30, y + this.FLOOR_HEIGHT / 2 + 5);
+            }
+            this.requests.forEach(req => {
+                const y = (NUM_FLOORS - 1 - req.from) * this.FLOOR_HEIGHT + this.FLOOR_HEIGHT / 2;
+                this.ctx.fillStyle = req.to > req.from ? '#22c55e' : '#ef4444';
+                this.ctx.beginPath(); this.ctx.arc(shaftX - 15, y, 5, 0, 2 * Math.PI); this.ctx.fill();
+            });
+            const doorOpenOffset = this.elevator.state === 'doors_open' ? 10 * Math.sin((Math.PI * (DOOR_OPEN_DURATION - this.elevator.doorTimer)) / DOOR_OPEN_DURATION) : 0;
+            this.ctx.fillStyle = '#a5b4fc';
+            this.ctx.fillRect(shaftX + 5, this.elevator.y + 5, 30 - doorOpenOffset, this.FLOOR_HEIGHT - 10);
+            this.ctx.fillRect(shaftX + 35 + doorOpenOffset, this.elevator.y + 5, 30 - doorOpenOffset, this.FLOOR_HEIGHT - 10);
+            this.ctx.strokeStyle = '#4f46e5'; this.ctx.lineWidth = 2;
+            this.ctx.strokeRect(shaftX + 5, this.elevator.y + 5, 60, this.FLOOR_HEIGHT - 10);
+            this.ctx.fillStyle = 'white';
+            this.elevator.passengers.forEach((p, i) => {
+                const x = shaftX + 15 + (i % 4) * 12;
+                const y_p = this.elevator.y + 20 + Math.floor(i / 4) * 15;
+                this.ctx.beginPath(); this.ctx.arc(x, y_p, 4, 0, 2 * Math.PI); this.ctx.fill();
+            });
+        }
+        
+        update() {
+            this.requests.forEach(r => r.waitTime++);
+            this.elevator.currentFloor = NUM_FLOORS - 1 - Math.round(this.elevator.y / this.FLOOR_HEIGHT);
+            if (this.elevator.state === 'doors_open') {
+                this.elevator.doorTimer--;
+                if (this.elevator.doorTimer <= 0) this.elevator.state = 'idle';
+                return;
+            }
+            if (this.elevator.state === 'idle') {
+                this.elevator.targetFloor = this.algorithm(this.elevator, this.requests);
+                if (this.elevator.targetFloor !== this.elevator.currentFloor) {
+                    this.elevator.state = 'moving';
+                    const newDirection = Math.sign(this.elevator.targetFloor - this.elevator.currentFloor);
+                    if (newDirection !== 0) this.elevator.direction = newDirection;
+                } else if (this.elevator.targetFloor === this.elevator.currentFloor) {
+                    this.handleStop();
+                }
+            }
+            if (this.elevator.state === 'moving') {
+                const targetY = (NUM_FLOORS - 1 - this.elevator.targetFloor) * this.FLOOR_HEIGHT;
+                const distance = targetY - this.elevator.y;
+                if (Math.abs(distance) < 1) {
+                    this.elevator.y = targetY;
+                    this.elevator.state = 'idle';
+                } else {
+                    let velocity = distance * this.easeFactor;
+                    velocity = Math.max(-this.maxSpeed, Math.min(this.maxSpeed, velocity));
+                    this.elevator.y += velocity;
+                }
+            }
+        }
+
+        handleStop() {
+            const floor = this.elevator.currentFloor;
+            let didSomething = false;
+            const passengersToDrop = this.elevator.passengers.filter(p => p.to === floor);
+            if (passengersToDrop.length > 0) {
+                this.elevator.passengers = this.elevator.passengers.filter(p => p.to !== floor);
+                didSomething = true;
+            }
+            const passengersToPick = this.requests.filter(r => r.from === floor);
+            if (passengersToPick.length > 0) {
+                this.elevator.passengers.push(...passengersToPick);
+                this.requests = this.requests.filter(r => r.from !== floor);
+                didSomething = true;
+            }
+            if (didSomething) {
+                this.elevator.state = 'doors_open';
+                this.elevator.doorTimer = DOOR_OPEN_DURATION;
+            }
+        }
+
+        addRequest(from, to) {
+            if (!this.requests.some(r => r.from === from && r.to === to) && !this.elevator.passengers.some(p => p.from === from && p.to === to)) {
+                 this.requests.push({ from, to, waitTime: 0 });
+            }
+        }
+
+        addRandomRequest() {
+            if (this.requests.length + this.elevator.passengers.length > 5) return;
+            let from = Math.floor(Math.random() * NUM_FLOORS);
+            let to = Math.floor(Math.random() * NUM_FLOORS);
+            if (from === to) to = (to + 1) % NUM_FLOORS;
+            this.addRequest(from, to);
+        }
+        
+        calculateETA(newRequest) {
+            let tempElevator = JSON.parse(JSON.stringify(this.elevator));
+            let tempRequests = JSON.parse(JSON.stringify(this.requests));
+            tempRequests.push({ ...newRequest, waitTime: 0 });
+            let time = 0;
+            const MAX_TIME = 5000;
+            while(time < MAX_TIME) {
+                tempRequests.forEach(r => r.waitTime++);
+                const currentFloor = NUM_FLOORS - 1 - Math.round(tempElevator.y / this.FLOOR_HEIGHT);
+                if (tempRequests.every(r => r.from !== newRequest.from)) return Math.round(time / 60);
+                let targetFloor = this.algorithm(tempElevator, tempRequests);
+                if (targetFloor === -1 || targetFloor === undefined || targetFloor === currentFloor) {
+                    if (tempRequests.length === 0 && tempElevator.passengers.length === 0) break;
+                    const passengersToPick = tempRequests.filter(r => r.from === currentFloor);
+                    if(passengersToPick.length > 0) {
+                        tempElevator.passengers.push(...passengersToPick);
+                        tempRequests = tempRequests.filter(r => r.from !== currentFloor);
+                        time += DOOR_OPEN_DURATION;
+                        continue;
+                    } else break;
+                }
+                const travelFrames = Math.abs(targetFloor - currentFloor) * (this.FLOOR_HEIGHT / this.maxSpeed);
+                time += travelFrames + DOOR_OPEN_DURATION;
+                tempElevator.y = (NUM_FLOORS - 1 - targetFloor) * this.FLOOR_HEIGHT;
+                tempElevator.passengers = tempElevator.passengers.filter(p => p.to !== targetFloor);
+                const newPassengers = tempRequests.filter(r => r.from === targetFloor);
+                tempElevator.passengers.push(...newPassengers);
+                tempRequests = tempRequests.filter(r => r.from !== targetFloor);
+            }
+            return 99;
+        }
+
+        gameLoop() {
+            if (!this.isRunning) return;
+            this.update();
+            this.draw();
+            requestAnimationFrame(() => this.gameLoop());
+        }
+    }
+
+    // --- Algorithm Implementations ---
+    function fcfsAlgorithm(elevator, requests) {
+        if (elevator.passengers.length > 0) return elevator.passengers[0].to;
+        if (requests.length > 0) return requests[0].from;
+        return elevator.currentFloor;
+    }
+    function scanAlgorithm(elevator, requests) {
+        const allStops = new Set([...elevator.passengers.map(p => p.to), ...requests.map(r => r.from)]);
+        if (allStops.size === 0) { elevator.direction = 0; return elevator.currentFloor; }
+        if (elevator.direction === 0 && (requests.length > 0 || elevator.passengers.length > 0)) {
+            const nextStop = requests.length > 0 ? requests[0].from : elevator.passengers[0].to;
+            elevator.direction = (nextStop >= elevator.currentFloor) ? 1 : -1;
+        }
+        const stopsInDirection = Array.from(allStops).filter(floor => elevator.direction === 1 ? floor >= elevator.currentFloor : floor <= elevator.currentFloor);
+        if (stopsInDirection.length > 0) return elevator.direction === 1 ? Math.min(...stopsInDirection) : Math.max(...stopsInDirection);
+        elevator.direction *= -1;
+        const stopsInNewDirection = Array.from(allStops);
+        if (stopsInNewDirection.length > 0) return elevator.direction === 1 ? Math.min(...stopsInNewDirection) : Math.max(...stopsInNewDirection);
+        return elevator.currentFloor;
+    }
+    function aiAlgorithm(elevator, requests) {
+        const W_TRAVEL = 1.0, W_WAIT = 0.2, W_JOURNEY = 0.5, W_DIR = 20;
+        const allStops = new Set([...elevator.passengers.map(p => p.to), ...requests.map(r => r.from)]);
+        if (allStops.size === 0) { elevator.direction = 0; return elevator.currentFloor; }
+        let bestTarget = -1, minCost = Infinity;
+        allStops.forEach(targetFloor => {
+            const travelCost = Math.abs(targetFloor - elevator.currentFloor) * W_TRAVEL;
+            const waitRelief = requests.filter(r => r.from === targetFloor).reduce((sum, req) => sum + req.waitTime, 0);
+            const waitCost = -waitRelief * W_WAIT;
+            let journeyCost = 0;
+            elevator.passengers.forEach(p => {
+                const originalDist = Math.abs(p.to - elevator.currentFloor);
+                const newDist = Math.abs(targetFloor - elevator.currentFloor) + Math.abs(p.to - targetFloor);
+                if (newDist > originalDist) journeyCost += (newDist - originalDist) * W_JOURNEY;
+            });
+            const moveDirection = Math.sign(targetFloor - elevator.currentFloor);
+            let directionCost = 0;
+            if (elevator.direction !== 0 && moveDirection !== 0 && moveDirection !== elevator.direction) directionCost = W_DIR;
+            const totalCost = travelCost + waitCost + journeyCost + directionCost;
+            if (totalCost < minCost) { minCost = totalCost; bestTarget = targetFloor; }
+        });
+        return bestTarget !== -1 ? bestTarget : elevator.currentFloor;
+    }
+
+    // --- Setup and Event Listeners ---
+    function setupControls(prefix, sim) {
+        const fromSelect = document.getElementById(`${prefix}-from`), toSelect = document.getElementById(`${prefix}-to`), addBtn = document.getElementById(`add-${prefix}-btn`), etaDisplay = document.getElementById(`${prefix}-eta`);
+        fromSelect.innerHTML = ''; toSelect.innerHTML = '';
+        for (let i = NUM_FLOORS - 1; i >= 0; i--) {
+            const floorLabel = i === 0 ? 'G' : i;
+            fromSelect.innerHTML += `<option value="${i}">${floorLabel}</option>`;
+            toSelect.innerHTML += `<option value="${i}">${floorLabel}</option>`;
+        }
+        fromSelect.value = '0'; toSelect.value = '4';
+        addBtn.addEventListener('click', () => {
+            const from = parseInt(fromSelect.value), to = parseInt(toSelect.value);
+            if (from !== to) { etaDisplay.textContent = `${sim.calculateETA({ from, to })}s`; sim.addRequest(from, to); }
+        });
+    }
+    
+    // --- Initialize Simulations ---
+    const fcfsSim = new ElevatorSimulation('fcfs-canvas', fcfsAlgorithm);
+    const scanSim = new ElevatorSimulation('scan-canvas', scanAlgorithm);
+    const aiSim = new ElevatorSimulation('ai-canvas', aiAlgorithm);
+    setupControls('fcfs', fcfsSim);
+    setupControls('scan', scanSim);
+    setupControls('ai', aiSim);
+    const initialRequests = [ { from: 4, to: 1 }, { from: 8, to: 2 }, { from: 1, to: 9 }, { from: 5, to: 0 }, ];
+    initialRequests.forEach(req => { fcfsSim.addRequest(req.from, req.to); scanSim.addRequest(req.from, req.to); aiSim.addRequest(req.from, req.to); });
+
+    // --- Intersection Observer to start simulations on scroll ---
+    const simulations = [
+        { canvasId: 'fcfs-canvas', sim: fcfsSim },
+        { canvasId: 'scan-canvas', sim: scanSim },
+        { canvasId: 'ai-canvas', sim: aiSim }
+    ];
+    const observerOptions = { root: null, rootMargin: '0px', threshold: 0.5 };
+    const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const targetSim = simulations.find(s => s.canvasId === entry.target.id);
+                if (targetSim) {
+                    targetSim.sim.start();
+                    observer.unobserve(entry.target);
+                }
+            }
+        });
+    }, observerOptions);
+    simulations.forEach(s => {
+        const canvas = document.getElementById(s.canvasId);
+        if (canvas) observer.observe(canvas);
+    });
+
+
+    // --- App Prototype Logic ---
+    const appNavBtns = document.querySelectorAll('.app-nav-btn');
+    const appPages = document.querySelectorAll('.app-page');
+    const requestElevatorBtn = document.getElementById('request-elevator-btn');
+    const takeStairsBtn = document.getElementById('take-stairs-btn');
+    const appIdleState = document.getElementById('app-idle-state');
+    const appQueueState = document.getElementById('app-queue-state');
+    const appEtaDisplay = document.getElementById('app-eta');
+    const cancelRequestBtn = document.getElementById('cancel-request-btn');
+    const appNotification = document.getElementById('app-notification');
+    let etaInterval;
+
+    function showNotification(message, type = 'success') { 
+        appNotification.textContent = message;
+        appNotification.className = `absolute bottom-20 left-5 right-5 text-white text-center py-3 px-4 rounded-lg shadow-lg ${type === 'success' ? 'bg-emerald-500' : 'bg-indigo-500'}`;
+        appNotification.classList.add('animate-slide-in-up');
+        appNotification.classList.remove('hidden'); 
+        setTimeout(() => { appNotification.classList.add('hidden'); appNotification.classList.remove('animate-slide-in-up'); }, 3000); 
+    }
+
+    appNavBtns.forEach(btn => { 
+        btn.addEventListener('click', () => { 
+            const pageId = btn.dataset.page; 
+            appPages.forEach(p => p.classList.add('hidden')); 
+            document.getElementById(pageId).classList.remove('hidden'); 
+            appNavBtns.forEach(b => b.classList.replace('text-indigo-600', 'text-gray-500')); 
+            btn.classList.replace('text-gray-500', 'text-indigo-600'); 
+            
+            if (pageId === 'app-challenge-page') renderChallengesPage();
+            if (pageId === 'app-impact-page') renderImpactPage();
+            if (pageId === 'app-rewards-page') renderRewardsPage();
+        }); 
+    });
+
+    requestElevatorBtn.addEventListener('click', () => {
+        appIdleState.classList.add('hidden');
+        appQueueState.classList.remove('hidden');
+        startEtaCountdown(150);
+    });
+    
+    cancelRequestBtn.addEventListener('click', () => { 
+        clearInterval(etaInterval); 
+        appQueueState.classList.add('hidden'); 
+        appIdleState.classList.remove('hidden'); 
+    });
+    
+    function startEtaCountdown(seconds) { 
+        let timeLeft = seconds; 
+        const update = () => {
+            timeLeft--; 
+            const minutes = Math.floor(timeLeft / 60); 
+            const secs = timeLeft % 60; 
+            appEtaDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`; 
+            if (timeLeft <= 0) { 
+                clearInterval(etaInterval); 
+                appQueueState.classList.add('hidden'); 
+                appIdleState.classList.remove('hidden'); 
+                showNotification("Your elevator has arrived!", 'success'); 
+            }
+        };
+        update();
+        etaInterval = setInterval(update, 1000); 
+    }
+
+    takeStairsBtn.addEventListener('click', () => {
+        userData.points += 40;
+        userData.floorsClimbed += 4;
+        userData.co2Saved += 0.04;
+        userData.weeklyClimbs[6] += 4;
+        leaderboardData.find(u => u.name === userData.name).points = userData.points;
+        let notificationText = "🎉 +40 Points! Great choice!";
+        if (userData.floorsClimbed >= 100 && !userData.earnedBadges.includes('mountain_goat')) {
+            userData.earnedBadges.push('mountain_goat');
+            notificationText = "🏆 Badge Unlocked: Mountain Goat!";
+        }
+        showNotification(notificationText, 'success');
+    });
+
+    // Highlight **bold** text
+    function highlightAsterisks() {
+        // Only highlight inside main content/slides
+        document.querySelectorAll('section.slide, .slide').forEach(section => {
+            section.querySelectorAll('p, li, div, span').forEach(el => {
+                if (el.childElementCount === 0 && el.innerHTML.includes('**')) {
+                    el.innerHTML = el.innerHTML.replace(/\*\*(.+?)\*\*/g, '<span class="font-bold text-indigo-600">$1</span>');
+                }
+            });
+        });
+    }
+
+    // Call after DOM loaded
+    highlightAsterisks();
+
+    // After dynamic content updates, call highlightAsterisks()
+    function renderImpactPage() {
+        const page = document.getElementById('app-impact-page');
+        page.innerHTML = `<h3 class="text-2xl font-bold mb-4">My Impact</h3> <div class="bg-indigo-100 p-4 rounded-xl text-center"> <p class="text-indigo-800">Your choices have helped reduce the average wait time by</p> <p class="text-5xl font-bold text-indigo-600 my-2">${(userData.floorsClimbed / 1000 * 8).toFixed(1)}%</p> <p class="text-sm text-indigo-700">this month!</p> </div> <div class="mt-4 grid grid-cols-2 gap-4"> <div class="bg-emerald-100 p-4 rounded-xl text-center"> <p class="text-emerald-800 text-sm font-medium">Floors Climbed</p> <p class="text-3xl font-bold text-emerald-900">${userData.floorsClimbed}</p> </div> <div class="bg-blue-100 p-4 rounded-xl text-center"> <p class="text-blue-800 text-sm font-medium">CO₂ Saved (kg)</p> <p class="text-3xl font-bold text-blue-900">${userData.co2Saved.toFixed(1)}</p> </div> </div> <div class="mt-6"> <h4 class="font-bold text-lg mb-2 text-center">Weekly Activity</h4> <div class="h-48"><canvas id="impactChartCanvas"></canvas></div> </div>`;
+        const ctx = document.getElementById('impactChartCanvas').getContext('2d');
+        if(impactChart) impactChart.destroy();
+        impactChart = new Chart(ctx, { type: 'bar', data: { labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], datasets: [{ label: 'Floors Climbed', data: userData.weeklyClimbs, backgroundColor: 'rgba(79, 70, 229, 0.6)', borderColor: 'rgba(79, 70, 229, 1)', borderWidth: 1, borderRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } } });
+        highlightAsterisks();
+    }
+    function renderChallengesPage() {
+        const page = document.getElementById('app-challenge-page');
+        page.innerHTML = `<h3 class="text-2xl font-bold mb-4">Challenges</h3> <div class="border-b border-gray-200"> <nav class="-mb-px flex space-x-6"> <button data-tab="leaderboard" class="app-challenge-tab py-3 px-1 border-b-2 font-medium text-sm border-indigo-500 text-indigo-600">Leaderboard</button> <button data-tab="badges" class="app-challenge-tab py-3 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700">My Badges</button> </nav> </div> <div id="leaderboard-content" class="challenge-content mt-4 space-y-3"></div> <div id="badges-content" class="challenge-content hidden mt-4 grid grid-cols-3 gap-4 text-center"></div>`;
+        renderLeaderboard();
+        renderBadges();
+        page.querySelectorAll('.app-challenge-tab').forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                page.querySelectorAll('.app-challenge-tab').forEach(t => { t.classList.replace('border-indigo-500', 'border-transparent'); t.classList.replace('text-indigo-600', 'text-gray-500'); });
+                e.target.classList.replace('border-transparent', 'border-indigo-500'); e.target.classList.replace('text-gray-500', 'text-indigo-600');
+                page.querySelectorAll('.challenge-content').forEach(c => c.classList.add('hidden'));
+                document.getElementById(`${e.target.dataset.tab}-content`).classList.remove('hidden');
+            });
+        });
+        highlightAsterisks();
+    }
+    function renderLeaderboard() {
+        const container = document.getElementById('leaderboard-content');
+        container.innerHTML = '';
+        const sortedLeaderboard = [...leaderboardData].sort((a, b) => b.points - a.points);
+        sortedLeaderboard.forEach((user, index) => {
+            const rank = index + 1;
+            const isCurrentUser = user.name === userData.name;
+            const rankColors = { 1: 'bg-yellow-100 text-yellow-800', 2: 'bg-gray-200 text-gray-800', 3: 'bg-orange-200 text-orange-800' };
+            const rankEmoji = { 1: '🥇', 2: '�', 3: '🥉' };
+            const entry = document.createElement('div');
+            entry.className = `flex items-center p-2 rounded-lg ${isCurrentUser ? 'bg-indigo-100 border-2 border-indigo-500' : rankColors[rank] || 'bg-white'}`;
+            entry.innerHTML = `<span class="font-bold text-lg mr-3 w-6 text-center">${rankEmoji[rank] || rank + '.'}</span> <img src="https://i.pravatar.cc/32?u=${user.avatar}" class="w-8 h-8 rounded-full mr-3" onerror="this.onerror=null;this.src='https://placehold.co/32x32/E0E0E0/000000?text=${user.name[0]}';"> <span class="flex-grow ${isCurrentUser ? 'font-bold' : ''}">${isCurrentUser ? 'You' : user.name}</span> <span class="font-bold">${user.points.toLocaleString()} pts</span>`;
+            container.appendChild(entry);
+        });
+    }
+    function renderBadges() {
+        const container = document.getElementById('badges-content');
+        container.innerHTML = '';
+        Object.keys(allBadges).forEach(badgeId => {
+            const badge = allBadges[badgeId];
+            const isEarned = userData.earnedBadges.includes(badgeId);
+            const badgeEl = document.createElement('div');
+            badgeEl.className = `bg-gray-100 p-3 rounded-lg ${isEarned ? '' : 'opacity-40'}`;
+            badgeEl.innerHTML = `<div class="text-4xl">${badge.emoji}</div><span class="text-xs font-semibold">${badge.name}</span><p class="text-xs text-gray-500">${badge.desc || ''}</p>`;
+            container.appendChild(badgeEl);
+        });
+    }
+    function renderRewardsPage() {
+        const page = document.getElementById('app-rewards-page');
+        page.innerHTML = `<div class="flex justify-between items-center mb-4"> <h3 class="text-2xl font-bold">Rewards</h3> <div class="bg-indigo-100 text-indigo-800 font-bold text-lg py-1 px-3 rounded-full"> ${userData.points.toLocaleString()} PTS </div> </div> <div id="rewards-grid" class="space-y-3"></div>`;
+        const grid = document.getElementById('rewards-grid');
+        rewardsData.forEach(reward => {
+            const canAfford = userData.points >= reward.points;
+            const card = document.createElement('div');
+            card.className = `bg-white p-4 rounded-lg shadow-sm flex items-center justify-between`;
+            card.innerHTML = `<div class="flex items-center"> <div class="text-4xl mr-4">${reward.icon}</div> <div> <p class="font-bold">${reward.name}</p> <p class="text-sm text-gray-500">${reward.vendor}</p> </div> </div> <button data-reward-id="${reward.id}" class="redeem-btn ${canAfford ? 'bg-emerald-500 hover:bg-emerald-600' : 'bg-gray-300 cursor-not-allowed'} text-white font-bold py-2 px-4 rounded-lg text-sm transition-colors" ${!canAfford ? 'disabled' : ''}> ${reward.points} PTS </button>`;
+            grid.appendChild(card);
+        });
+        document.querySelectorAll('.redeem-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const rewardId = e.target.dataset.rewardId;
+                const reward = rewardsData.find(r => r.id === rewardId);
+                if (reward && userData.points >= reward.points) {
+                    userData.points -= reward.points;
+                    showNotification(`Redeemed ${reward.name}!`, 'success');
+                    renderRewardsPage(); 
+                }
+            });
+        });
+        highlightAsterisks();
+    }
+});
+</script>
+</body>
+</html>
