@@ -17,28 +17,47 @@
         .slide-heading::after { content: ''; display: block; width: 40px; height: 3px; background-color: #4f46e5; margin: 8px auto 0; border-radius: 1.5px; }
         .sim-container { position: relative; width: 100%; max-width: 400px; margin-left: auto; margin-right: auto; }
         .sim-canvas { border: 2px solid #94a3b8; background-color: #1e293b; border-radius: 0.5rem; }
-        .app-phone { width: 100%; max-width: 320px; aspect-ratio: 9 / 16; margin: 0 auto; background-color: #000; border: 8px solid #000; border-radius: 2rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); position: relative; overflow: hidden; }
-        .app-screen { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: #f8fafc; transition: all 0.3s ease-in-out; }
+        .app-phone { width: 100%; max-width: 320px; aspect-ratio: 9 / 16; margin: 0 auto; background-color: #1e293b; border: 8px solid #1e293b; border-radius: 2.5rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); position: relative; overflow: hidden; display: flex; flex-direction: column; }
+        .app-screen { position: relative; flex-grow: 1; background-color: #f8fafc; }
         @keyframes slide-in-up { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .animate-slide-in-up { animation: slide-in-up 0.5s ease-out forwards; }
-        .card-glow { transition: all 0.3s ease-in-out; }
-        .card-glow:hover { box-shadow: 0 0 20px rgba(79, 70, 229, 0.1); transform: translateY(-4px); }
-        mark { color: #4f46e5; font-weight: 600; background: none; }
+        @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+        .animate-fade-in { animation: fade-in 0.5s ease-out forwards; }
+        strong, .purple-bold { color: #6d28d9; font-weight: 600; }
+        .app-page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+            overflow-y: auto;
+        }
+        .app-page.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .app-page::-webkit-scrollbar { width: 4px; }
+        .app-page::-webkit-scrollbar-track { background: transparent; }
+        .app-page::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 2px; }
+        .app-page::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
-<body class="bg-sky-100 text-slate-800">
+<body class="bg-sky-50 text-slate-800">
 
     <header class="fixed top-0 left-0 right-0 z-50 py-4 bg-white/80 backdrop-blur-lg border-b border-slate-200">
         <div class="container mx-auto px-6 text-center">
-            <h1 class="text-2xl font-bold text-slate-900">Elevate<span class="text-indigo-600">ED</span></h1>
+            <h1 class="text-2xl font-bold">Elevate<span class="text-indigo-600">ED</span> Presentation</h1>
         </div>
     </header>
 
     <main class="pt-20">
         <!-- Slide 1: Introduction -->
-        <section id="intro-slide" class="slide text-center">
+        <section id="intro-slide" class="slide bg-white text-center">
             <div class="container mx-auto px-6">
-                <h2 class="text-4xl md:text-6xl font-extrabold text-slate-900 leading-tight mb-4">A Smarter Way Up</h2>
+                <h2 class="text-4xl md:text-6xl font-bold leading-tight mb-4">A Smarter Way Up</h2>
                 <p class="text-xl md:text-2xl text-slate-600 max-w-3xl mx-auto">
                     Transforming the single-lift building from a point of frustration to a model of efficiency.
                 </p>
@@ -47,108 +66,104 @@
 
         <!-- Slide 2: The Problem -->
         <section id="problem-slide" class="slide py-16 text-center">
-            <div class="container mx-auto px-6">
-                <h3 class="text-3xl font-bold section-title text-slate-900 mb-10">The Challenge: Inefficient Lifts</h3>
-                <p class="text-lg text-slate-600 max-w-3xl mx-auto mb-10">
-                    Traditional elevators, especially in single-lift buildings, operate on reactive logic. They don't know where you're going or who else is waiting. This leads to wasted time, energy, and a frustrating experience for everyone. Our solution addresses this by adding a layer of intelligence.
-                </p>
+            <div class="container mx-auto px-6 max-w-4xl">
+                <h3 class="text-3xl font-bold section-title mb-10">The Initial Scenario</h3>
+                <blockquote class="bg-white p-8 rounded-xl shadow-lg border border-slate-200">
+                    <p class="text-xl md:text-2xl italic text-slate-700 leading-relaxed">
+                        "During peak hours, the ground floor lift is always full. Students and faculty on other floors can't get in. Frustration builds, but walking 5 floors isn't an easy option for many. There's no provision for another lift."
+                    </p>
+                </blockquote>
             </div>
         </section>
-
-        <!-- NEW: Psychology of Waiting Slide -->
-        <section id="psychology-slide" class="slide py-16">
-            <div class="container mx-auto px-6 max-w-4xl text-center">
-                <h3 class="text-3xl md:text-4xl font-bold section-title text-slate-900 mb-10">Why Waiting Feels So Bad</h3>
-                <p class="text-lg text-slate-600 mb-12">It's not just about the time lost; it's about how the wait makes us feel. Our solution is designed to tackle the psychology of waiting.</p>
-                <div class="grid md:grid-cols-2 gap-8 text-left">
-                    <div class="bg-white p-6 rounded-lg card-glow border border-slate-200">
-                        <p class="text-2xl mb-3">🕒</p>
-                        <h4 class="font-bold text-xl text-slate-800 mb-2">Unoccupied Time Feels Longer</h4>
-                        <p class="text-slate-600">Staring at a closed door feels like an eternity. Our app gives users something to do—check their progress, see challenges—turning idle time into engaged time.</p>
+        
+        <!-- NEW: Who is this for? -->
+        <section id="audience-slide" class="slide bg-white py-16 text-center">
+            <div class="container mx-auto px-6 max-w-4xl">
+                <h3 class="text-3xl md:text-4xl font-bold section-title mb-10">Who Will Use Our Solution?</h3>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="bg-slate-50 p-6 rounded-lg">
+                        <div class="text-4xl mb-4">🎓</div>
+                        <h4 class="text-xl font-bold mb-2">Students & Faculty</h4>
+                        <p class="text-slate-600">The daily users who experience the frustration firsthand and will benefit from a faster, more reliable system.</p>
                     </div>
-                    <div class="bg-white p-6 rounded-lg card-glow border border-slate-200">
-                         <p class="text-2xl mb-3">❓</p>
-                        <h4 class="font-bold text-xl text-slate-800 mb-2">Uncertain Waits Are More Stressful</h4>
-                        <p class="text-slate-600">Not knowing when the elevator will arrive causes anxiety. Our app provides a clear, accurate ETA, giving users a sense of control and reducing stress.</p>
+                    <div class="bg-slate-50 p-6 rounded-lg">
+                        <div class="text-4xl mb-4">🏛️</div>
+                        <h4 class="text-xl font-bold mb-2">Campus Administration</h4>
+                        <p class="text-slate-600">The decision-makers who are looking for a cost-effective solution to improve campus life, efficiency, and accessibility.</p>
+                    </div>
+                     <div class="bg-slate-50 p-6 rounded-lg">
+                        <div class="text-4xl mb-4">🛠️</div>
+                        <h4 class="text-xl font-bold mb-2">Facilities Management</h4>
+                        <p class="text-slate-600">The teams who manage building operations and will benefit from reduced energy consumption and smarter traffic flow.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Slide 4: FCFS Simulation -->
+        <!-- Slide 3: FCFS Simulation -->
         <section id="fcfs-slide" class="slide py-16">
             <div class="container mx-auto px-6">
                 <div class="text-center">
-                    <h3 class="text-3xl font-bold slide-heading text-slate-900 mb-4">1. First-Come, First-Served (FCFS)</h3>
+                    <h3 class="text-3xl font-bold slide-heading mb-4">The "Old Way": First-Come, First-Served (FCFS)</h3>
                     <p class="text-lg text-slate-600 max-w-3xl mx-auto mb-8">
-                       Think of this as a simple <mark>To-Do List</mark>. The elevator completes tasks in the exact order they're added, no matter how inefficient. It has no foresight and can't group trips, leading to a lot of wasted movement.
+                        Think of this as a simple <strong class="purple-bold">To-Do List</strong>. The elevator completes tasks in the exact order they're added, no matter how inefficient. It has no foresight and can't group trips, leading to a lot of wasted movement.
                     </p>
                 </div>
                 <div class="grid md:grid-cols-2 gap-8 items-center justify-center">
                     <div class="sim-container">
                         <canvas id="fcfs-canvas" class="sim-canvas" width="300" height="450"></canvas>
                     </div>
-                    <div class="flex flex-col space-y-4">
-                        <div class="bg-white p-6 rounded-lg border border-slate-200 card-glow">
-                             <h4 class="font-bold text-lg text-slate-800 text-center mb-3">Example Scenario</h4>
-                             <p class="text-sm text-slate-600 mb-4">Imagine these requests come in:</p>
-                             <ol class="list-decimal list-inside space-y-2 text-sm">
-                                 <li><span class="font-semibold text-slate-700">Request A:</span> Floor 8 to Floor 2 (Down)</li>
-                                 <li><span class="font-semibold text-slate-700">Request B:</span> Floor 7 to Floor 4 (Down)</li>
-                                 <li><span class="font-semibold text-slate-700">Request C:</span> Floor 1 to Floor 3 (Up)</li>
-                             </ol>
-                             <div class="mt-4 p-3 bg-red-100 text-red-800 rounded-md text-sm border border-red-200">
-                                 <p><strong class="font-semibold">The Inefficient Path:</strong> The elevator goes G ➝ 8 (Pick up A), down to 2 (Drop off A). Then it goes back up to 7 (Pick up B), down to 4 (Drop off B). Finally, it travels all the way down to 1 (Pick up C) and up to 3 (Drop off C). This is maximum travel for minimum efficiency.</p>
-                             </div>
-                        </div>
-                        <div class="bg-red-100 p-4 rounded-lg text-center border border-red-200">
-                            <p class="font-semibold text-red-800">Key Takeaway: No grouping means high travel and long waits.</p>
-                        </div>
+                    <div class="bg-white p-6 rounded-lg border border-slate-200">
+                         <h4 class="font-bold text-lg text-center mb-3">Example Scenario</h4>
+                         <p class="text-sm text-slate-600 mb-4">Imagine these requests come in:</p>
+                         <ol class="list-decimal list-inside space-y-2 text-sm">
+                             <li><span class="font-semibold">Request A:</span> Floor 8 to Floor 2 (Down)</li>
+                             <li><span class="font-semibold">Request B:</span> Floor 7 to Floor 4 (Down)</li>
+                             <li><span class="font-semibold">Request C:</span> Floor 1 to Floor 3 (Up)</li>
+                         </ol>
+                         <div class="mt-4 p-3 bg-red-100 text-red-800 rounded-md text-sm">
+                             <p><strong class="font-semibold">The Inefficient Path:</strong> The elevator goes G ➝ 8 (Pick up A), down to 2 (Drop off A). Then it goes back up to 7 (Pick up B), down to 4 (Drop off B). Finally, it travels all the way down to 1 (Pick up C) and up to 3 (Drop off C). This is maximum travel for minimum efficiency.</p>
+                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Slide 5: SCAN Simulation -->
+        <!-- Slide 4: SCAN Simulation -->
         <section id="scan-slide" class="slide py-16">
             <div class="container mx-auto px-6">
                 <div class="text-center">
-                    <h3 class="text-3xl font-bold slide-heading text-slate-900 mb-4">2. The SCAN Algorithm</h3>
+                    <h3 class="text-3xl font-bold slide-heading mb-4">A Better Way: The SCAN Algorithm</h3>
                     <p class="text-lg text-slate-600 max-w-3xl mx-auto mb-8">
-                        This is smarter, like a <mark>Bus Route</mark>. The elevator travels all the way to the top, servicing any calls along the way, and then all the way to the bottom. It's more efficient than FCFS but can still lead to long waits if you're going against the main flow of traffic.
+                        This is smarter, like a <strong class="purple-bold">Bus Route</strong>. The elevator travels all the way to the top, servicing any calls along the way, and then all the way to the bottom. It's more efficient than FCFS but can still lead to long waits if you're going against the main flow of traffic.
                     </p>
                 </div>
                 <div class="grid md:grid-cols-2 gap-8 items-center justify-center">
                     <div class="sim-container">
                         <canvas id="scan-canvas" class="sim-canvas" width="300" height="450"></canvas>
                     </div>
-                    <div class="flex flex-col space-y-4">
-                         <div class="bg-white p-6 rounded-lg border border-slate-200 card-glow">
-                             <h4 class="font-bold text-lg text-slate-800 text-center mb-3">Example Scenario</h4>
-                             <p class="text-sm text-slate-600 mb-4">Using the same requests:</p>
-                              <ol class="list-decimal list-inside space-y-2 text-sm">
-                                 <li><span class="font-semibold text-slate-700">Request A:</span> Floor 8 to Floor 2 (Down)</li>
-                                 <li><span class="font-semibold text-slate-700">Request B:</span> Floor 7 to Floor 4 (Down)</li>
-                                 <li><span class="font-semibold text-slate-700">Request C:</span> Floor 1 to Floor 3 (Up)</li>
-                             </ol>
-                             <div class="mt-4 p-3 bg-yellow-100 text-yellow-800 rounded-md text-sm border border-yellow-200">
-                                 <p><strong class="font-semibold">The Better, But Flawed Path:</strong> The elevator goes G ➝ 8 to get Request A, setting its direction to **DOWN**. It sweeps down, picking up B at 7, dropping off B at 4, and dropping off A at 2. It **ignores** Request C at floor 1 because it's an "up" call. Only after reaching the bottom does it reverse to go G ➝ 1 (Pick up C). Person C had to wait for the entire round trip!</p>
-                             </div>
-                        </div>
-                        <div class="bg-yellow-100 p-4 rounded-lg text-center border border-yellow-200">
-                            <p class="font-semibold text-yellow-800">Key Takeaway: Better, but ignores requests going the opposite way.</p>
-                        </div>
+                    <div class="bg-white p-6 rounded-lg border border-slate-200">
+                         <h4 class="font-bold text-lg text-center mb-3">Example Scenario</h4>
+                         <p class="text-sm text-slate-600 mb-4">Using the same requests:</p>
+                          <ol class="list-decimal list-inside space-y-2 text-sm">
+                              <li><span class="font-semibold">Request A:</span> Floor 8 to Floor 2 (Down)</li>
+                              <li><span class="font-semibold">Request B:</span> Floor 7 to Floor 4 (Down)</li>
+                              <li><span class="font-semibold">Request C:</span> Floor 1 to Floor 3 (Up)</li>
+                          </ol>
+                         <div class="mt-4 p-3 bg-yellow-100 text-yellow-800 rounded-md text-sm">
+                             <p><strong class="font-semibold">The Better, But Flawed Path:</strong> The elevator goes G ➝ 8 to get Request A, setting its direction to **DOWN**. It sweeps down, picking up B at 7, dropping off B at 4, and dropping off A at 2. It **ignores** Request C at floor 1 because it's an "up" call. Only after reaching the bottom does it reverse to go G ➝ 1 (Pick up C). Person C had to wait for the entire round trip!</p>
+                         </div>
                     </div>
                 </div>
             </div>
         </section>
-
-        <!-- Slide 6: AI Explanation -->
-        <section id="ai-explanation-slide" class="slide py-16 text-left">
+        
+        <!-- AI Explanation -->
+        <section class="slide py-16 bg-white text-left">
             <div class="container mx-auto px-6 max-w-4xl">
-                <h3 class="text-3xl font-bold slide-heading text-slate-900 mb-8 text-center">How the ElevateED AI Thinks</h3>
+                <h3 class="text-3xl font-bold slide-heading mb-8 text-center">How the ElevateED AI Thinks</h3>
                 <p class="text-lg text-slate-600 mb-10 text-center max-w-3xl mx-auto">
-                    Unlike basic elevators, our AI acts like a <mark>Smart Taxi Driver</mark>. Instead of blindly following orders, it constantly asks: "What is the cheapest and fastest move I can make right now for <mark>everyone</mark>?" It determines the "cost" of every possible stop and always chooses the one with the lowest score.
+                    Unlike basic elevators, our AI acts like a <strong class="purple-bold">Smart Taxi Driver</strong>. Instead of blindly following orders, it constantly asks: "What is the cheapest and fastest move I can make right now for <strong class="purple-bold">everyone</strong>?" It determines the "cost" of every possible stop and always chooses the one with the lowest score.
                 </p>
                 <div class="grid md:grid-cols-2 gap-x-12 gap-y-8">
                     <div>
@@ -166,7 +181,7 @@
                         </p>
                     </div>
                 </div>
-                <div class="mt-8 bg-white p-6 rounded-lg grid md:grid-cols-2 gap-6 border border-slate-200">
+                <div class="mt-8 bg-slate-50 p-6 rounded-lg grid md:grid-cols-2 gap-6 border border-slate-200">
                     <div><p class="font-semibold flex items-center text-slate-800"><span class="text-xl mr-2">📏</span> Travel Time Cost</p><p class="text-sm text-slate-600 pl-8">Lower cost for closer stops.</p></div>
                     <div><p class="font-semibold flex items-center text-green-600"><span class="text-xl mr-2">😊</span> Wait Time Relief</p><p class="text-sm text-slate-600 pl-8">A "bonus" for picking up people who have waited a long time.</p></div>
                     <div><p class="font-semibold flex items-center text-red-600"><span class="text-xl mr-2">😠</span> Journey Time Cost</p><p class="text-sm text-slate-600 pl-8">A penalty for detours that delay current passengers.</p></div>
@@ -175,70 +190,80 @@
             </div>
         </section>
 
-        <!-- Slide 7: AI Simulation -->
+        <!-- Slide 5: AI Simulation -->
         <section id="ai-slide" class="slide py-16">
              <div class="container mx-auto px-6">
-                 <div class="text-center">
-                    <h3 class="text-3xl font-bold slide-heading text-slate-900 mb-4">3. The ElevateED AI</h3>
-                    <p class="text-lg text-slate-600 max-w-3xl mx-auto mb-8">
-                        By weighing all factors, the AI finds the optimal path in real-time. It's not just following a list or a route; it's making intelligent, dynamic decisions to minimize the total time wasted for everyone.
-                    </p>
-                </div>
-                <div class="grid md:grid-cols-2 gap-8 items-center justify-center">
-                    <div class="sim-container">
-                        <canvas id="ai-canvas" class="sim-canvas" width="300" height="450"></canvas>
-                    </div>
-                    <div class="flex flex-col space-y-4">
-                         <div class="bg-white p-6 rounded-lg border border-slate-200 card-glow">
-                             <h4 class="font-bold text-lg text-slate-800 text-center mb-3">Example Scenario</h4>
-                             <p class="text-sm text-slate-600 mb-4">With the same requests:</p>
-                              <ol class="list-decimal list-inside space-y-2 text-sm">
-                                 <li><span class="font-semibold text-slate-700">Request A:</span> Floor 8 to Floor 2 (Down)</li>
-                                 <li><span class="font-semibold text-slate-700">Request B:</span> Floor 7 to Floor 4 (Down)</li>
-                                 <li><span class="font-semibold text-slate-700">Request C:</span> Floor 1 to Floor 3 (Up)</li>
-                             </ol>
-                             <div class="mt-4 p-3 bg-green-100 text-green-800 rounded-md text-sm border border-green-200">
-                                 <p><strong class="font-semibold">The Optimal Path:</strong> The AI goes G ➝ 8 (Pick up A). It sees both B and C. It knows grouping the "down" trips is cheapest, so it goes 8 ➝ 7 (Pick up B). It then efficiently drops off B at 4 and A at 2. Now that all "down" tasks are done, its lowest cost move is to go to 1 for Request C. This intelligent grouping minimizes total travel and wait time.</p>
-                             </div>
-                        </div>
-                        <div class="bg-green-100 p-4 rounded-lg text-center border border-green-200">
-                            <p class="font-semibold text-green-800">Key Takeaway: The AI groups trips intelligently for maximum efficiency.</p>
-                        </div>
-                    </div>
-                </div>
+                  <div class="text-center">
+                      <h3 class="text-3xl font-bold slide-heading mb-4">Our Solution: The ElevateED AI</h3>
+                      <p class="text-lg text-slate-600 max-w-3xl mx-auto mb-8">
+                          By weighing all factors, the AI finds the optimal path in real-time. It's not just following a list or a route; it's making intelligent, dynamic decisions to minimize the total time wasted for everyone.
+                      </p>
+                  </div>
+                  <div class="grid md:grid-cols-2 gap-8 items-center justify-center">
+                      <div class="sim-container">
+                          <canvas id="ai-canvas" class="sim-canvas" width="300" height="450"></canvas>
+                      </div>
+                       <div class="bg-white p-6 rounded-lg border border-slate-200">
+                           <h4 class="font-bold text-lg text-center mb-3">Example Scenario</h4>
+                           <p class="text-sm text-slate-600 mb-4">With the same requests:</p>
+                            <ol class="list-decimal list-inside space-y-2 text-sm">
+                                <li><span class="font-semibold">Request A:</span> Floor 8 to Floor 2 (Down)</li>
+                                <li><span class="font-semibold">Request B:</span> Floor 7 to Floor 4 (Down)</li>
+                                <li><span class="font-semibold">Request C:</span> Floor 1 to Floor 3 (Up)</li>
+                            </ol>
+                           <div class="mt-4 p-3 bg-green-100 text-green-800 rounded-md text-sm">
+                               <p><strong class="font-semibold">The Optimal Path:</strong> The AI goes G ➝ 8 (Pick up A). It sees both B and C. It knows grouping the "down" trips is cheapest, so it goes 8 ➝ 7 (Pick up B). It then efficiently drops off B at 4 and A at 2. Now that all "down" tasks are done, its lowest cost move is to go to 1 for Request C. This intelligent grouping minimizes total travel and wait time.</p>
+                           </div>
+                      </div>
+                  </div>
             </div>
         </section>
 
-        <!-- NEW: Performance Showdown Slide -->
-        <section id="performance-slide" class="slide py-16 bg-slate-50">
-            <div class="container mx-auto px-6 max-w-4xl text-center">
-                <h3 class="text-3xl md:text-4xl font-bold section-title text-slate-900 mb-10">Performance Showdown</h3>
-                <p class="text-lg text-slate-600 mb-12">Here's how the algorithms stack up under pressure. The data clearly shows the AI's superiority across every key metric.</p>
-                <div class="bg-white p-8 rounded-xl shadow-lg border border-slate-200">
-                    <canvas id="performanceChart"></canvas>
-                </div>
-            </div>
-        </section>
-
-        <!-- Slide 9: App Prototype -->
+        <!-- Slide 7: App Prototype -->
         <section id="app-slide" class="slide py-16 bg-white text-center">
             <div class="container mx-auto px-6">
-                <h3 class="text-3xl font-bold slide-heading text-slate-900 mb-8">The App: Your Personal Terminal</h3>
+                <h3 class="text-3xl font-bold slide-heading mb-8">Demonstration: The Prototype</h3>
                 <p class="text-lg text-slate-600 max-w-2xl mx-auto mb-10">
-                    The ElevateED app is the key to providing the AI with the crucial destination data it needs to work its magic. It's a touchless, intuitive interface for a modern campus.
+                    The ElevateED app is the key to our solution. It's a touchless, intuitive interface that gathers the destination data our AI needs to work its magic.
                 </p>
-                 <div id="app-container" class="w-full max-w-sm mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border-8 border-gray-800 h-[600px] flex flex-col">
-                    <div class="flex-grow bg-gray-50 relative overflow-hidden">
-                        <div id="app-home-page" class="app-page p-5">
-                            <div class="flex justify-between items-center"><div><p class="text-gray-500">Good Morning,</p><h3 class="text-2xl font-bold text-slate-800">Rohan!</h3></div><img src="https://i.pravatar.cc/48?u=rohan" alt="User avatar" class="w-12 h-12 rounded-full" onerror="this.onerror=null;this.src='https://placehold.co/48x48/E0E0E0/000000?text=R';"></div>
-                            <div class="mt-4 bg-emerald-100 text-emerald-800 p-4 rounded-xl text-center"><p class="font-bold">✨ Fast Track Your Day!</p><p class="text-sm mb-3">Elevator wait is ~4 mins. Stairs are faster!</p><button id="take-stairs-btn" class="bg-emerald-500 text-white font-bold py-2 px-4 rounded-lg w-full hover:bg-emerald-600">Take Stairs & Earn 40 Points</button></div>
-                            <div id="app-idle-state" class="text-center mt-8"><div class="w-24 h-24 mx-auto rounded-full bg-indigo-100 flex items-center justify-center mb-4"><p class="text-4xl">🏢</p></div><h4 class="text-xl font-bold text-slate-800">Where are you headed?</h4><button id="request-elevator-btn" class="mt-4 bg-indigo-600 text-white font-bold py-3 px-8 rounded-full text-lg hover:bg-indigo-700 transition shadow-lg">Request Elevator</button></div>
-                            <div id="app-queue-state" class="hidden text-center mt-8"><div class="w-24 h-24 mx-auto rounded-full bg-gray-200 flex items-center justify-center mb-4 relative"><p class="text-4xl">⏳</p></div><h4 class="text-xl font-bold text-slate-800">You're in the queue!</h4><p class="text-gray-500">Estimated Arrival:</p><p id="app-eta" class="text-4xl font-bold text-indigo-600 my-2">02:30</p><button id="cancel-request-btn" class="mt-2 text-sm text-red-500 hover:underline">Cancel Request</button></div>
+                 <div class="app-phone">
+                    <div id="app-container" class="app-screen">
+                        <div class="flex-grow relative overflow-hidden h-full">
+                            <div id="app-home-page" class="app-page active p-5 text-left">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <p class="text-gray-500">Good Morning,</p>
+                                        <h3 class="text-2xl font-bold text-slate-800">Rasheed!</h3>
+                                    </div>
+                                    <img src="https://xsgames.co/randomusers/assets/avatars/male/1.jpg" alt="User avatar" class="w-12 h-12 rounded-full" onerror="this.onerror=null;this.src='https://placehold.co/48x48/E0E0E0/000000?text=R';">
+                                </div>
+                                <div class="mt-4 bg-emerald-100 text-emerald-800 p-4 rounded-xl text-center">
+                                    <p class="font-bold">✨ Fast Track Your Day!</p>
+                                    <p class="text-sm mb-3">Elevator wait is ~4 mins. Stairs are faster!</p>
+                                    <button id="take-stairs-btn" class="bg-emerald-500 text-white font-bold py-2 px-4 rounded-lg w-full hover:bg-emerald-600">Take Stairs & Earn 40 Points</button>
+                                </div>
+                                <div id="app-idle-state" class="text-center mt-8">
+                                    <div class="w-24 h-24 mx-auto rounded-full bg-indigo-100 flex items-center justify-center mb-4">
+                                        <p class="text-4xl">🏢</p>
+                                    </div>
+                                    <h4 class="text-xl font-bold text-slate-800">Where are you headed?</h4>
+                                    <button id="request-elevator-btn" class="mt-4 bg-indigo-600 text-white font-bold py-3 px-8 rounded-full text-lg hover:bg-indigo-700 transition shadow-lg">Request Elevator</button>
+                                </div>
+                                <div id="app-queue-state" class="hidden text-center mt-8">
+                                    <div class="w-24 h-24 mx-auto rounded-full bg-gray-200 flex items-center justify-center mb-4 relative">
+                                        <p class="text-4xl">⏳</p>
+                                    </div>
+                                    <h4 class="text-xl font-bold text-slate-800">You're in the queue!</h4>
+                                    <p class="text-gray-500">Estimated Arrival:</p>
+                                    <p id="app-eta" class="text-4xl font-bold text-indigo-600 my-2">00:00</p>
+                                    <button id="cancel-request-btn" class="mt-2 text-sm text-red-500 hover:underline">Cancel Request</button>
+                                </div>
+                            </div>
+                            <div id="app-challenge-page" class="app-page p-5 text-left"></div>
+                            <div id="app-impact-page" class="app-page p-5 text-left"></div>
+                            <div id="app-rewards-page" class="app-page p-5 text-left"></div>
+                            <div id="app-notification" class="hidden absolute bottom-20 left-5 right-5 bg-indigo-600 text-white text-center py-3 px-4 rounded-lg shadow-lg"></div>
                         </div>
-                        <div id="app-challenge-page" class="app-page hidden p-5"></div>
-                        <div id="app-impact-page" class="app-page hidden p-5"></div>
-                        <div id="app-rewards-page" class="app-page hidden p-5"></div>
-                        <div id="app-notification" class="hidden absolute bottom-20 left-5 right-5 bg-indigo-600 text-white text-center py-3 px-4 rounded-lg shadow-lg"></div>
                     </div>
                     <nav class="bg-white border-t border-gray-200 grid grid-cols-4 text-center">
                         <button data-page="app-home-page" class="app-nav-btn p-3 text-indigo-600"><p class="text-2xl mx-auto">🏠</p><span class="text-xs text-slate-700">Home</span></button>
@@ -249,37 +274,12 @@
                 </div>
             </div>
         </section>
-
-        <!-- NEW: Campus Impact Slide -->
-        <section id="campus-impact-slide" class="slide py-16 bg-slate-50 text-center">
-            <div class="container mx-auto px-6 max-w-4xl">
-                <h3 class="text-3xl md:text-4xl font-bold section-title text-slate-900 mb-10">A Strategic Win for the Campus</h3>
-                <div class="grid md:grid-cols-3 gap-8">
-                    <div class="bg-white p-6 rounded-lg card-glow border border-slate-200">
-                        <div class="text-4xl mb-4">🎓</div>
-                        <h4 class="text-xl font-bold text-slate-800 mb-2">For Students</h4>
-                        <p class="text-slate-600">Less stress, improved punctuality for classes, and a gamified system that encourages healthy habits.</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-lg card-glow border border-slate-200">
-                        <div class="text-4xl mb-4">👩‍🏫</div>
-                        <h4 class="text-xl font-bold text-slate-800 mb-2">For Faculty & Staff</h4>
-                        <p class="text-slate-600">More efficient movement between meetings and offices, reducing professional friction and wasted time.</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-lg card-glow border border-slate-200">
-                        <div class="text-4xl mb-4">🏛️</div>
-                        <h4 class="text-xl font-bold text-slate-800 mb-2">For The Campus</h4>
-                        <p class="text-slate-600">Lower energy costs, improved building reputation, and a commitment to modern, accessible, and sustainable technology.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Slide 11: The Future -->
+        
         <section id="future-slide" class="slide py-16 bg-slate-800 text-white text-center">
             <div class="container mx-auto px-6 max-w-3xl">
                 <h3 class="text-3xl md:text-4xl font-bold slide-heading mb-8">The Future is Ropeless</h3>
                 <p class="text-lg text-slate-300 mb-8">
-                    The next frontier in elevator technology is already here. Systems like the <mark>MULTI ropeless elevator</mark> use magnetic levitation to move multiple cars in a single shaft—both vertically and horizontally. This transforms an elevator system into an in-building metro, solving the problem not just with a smarter algorithm, but by revolutionizing the hardware itself.
+                    The next frontier in elevator technology is already here. Systems like the <strong class="purple-bold">MULTI ropeless elevator</strong> use magnetic levitation to move multiple cars in a single shaft—both vertically and horizontally. This transforms an elevator system into an in-building metro, solving the problem not just with a smarter algorithm, but by revolutionizing the hardware itself.
                 </p>
                 <p class="font-semibold text-indigo-400">Our AI-driven, data-centric approach is the essential software foundation for controlling these next-generation systems.</p>
             </div>
@@ -295,9 +295,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const DOOR_OPEN_DURATION = 60; // frames
 
     // --- App Mock Data ---
-    const userData = { name: 'Rohan', points: 640, floorsClimbed: 112, co2Saved: 1.2, weeklyClimbs: [15, 20, 12, 25, 18, 22, 0], earnedBadges: ['first_climb', 'mountain_goat'] };
-    const leaderboardData = [ { name: 'Sara K.', points: 1250, avatar: 'sara' }, { name: 'Mike L.', points: 1100, avatar: 'mike' }, { name: 'Chen W.', points: 980, avatar: 'chen' }, { name: 'Emily R.', points: 850, avatar: 'emily' }, { name: 'David P.', points: 780, avatar: 'david' }, { name: 'Maria G.', points: 710, avatar: 'maria' }, { name: 'Rohan', points: 640, avatar: 'rohan' }, ];
-    const allBadges = { 'first_climb': { emoji: '🏅', name: 'First Climb' }, 'mountain_goat': { emoji: '🧗', name: 'Mountain Goat', desc: 'Climb 100 floors' }, 'streak_week': { emoji: '⚡️', name: 'Streak Week', desc: 'Climb stairs 5 days in a row' }, 'sky_walker': { emoji: '🚀', name: 'Sky Walker', desc: 'Climb 500 floors' } };
+    const userData = { name: 'Rasheed', points: 640, floorsClimbed: 112, co2Saved: 1.2, weeklyClimbs: [15, 20, 12, 25, 18, 22, 0], earnedBadges: ['first_climb'] };
+    const leaderboardData = [ 
+        { name: 'Aryan', points: 1250, avatar: 'https://xsgames.co/randomusers/assets/avatars/male/2.jpg' }, 
+        { name: 'Kaif', points: 1100, avatar: 'https://xsgames.co/randomusers/assets/avatars/male/3.jpg' }, 
+        { name: 'Adib', points: 980, avatar: 'https://xsgames.co/randomusers/assets/avatars/male/4.jpg' }, 
+        { name: 'Shafi', points: 850, avatar: 'https://xsgames.co/randomusers/assets/avatars/male/5.jpg' }, 
+        { name: 'Pavan', points: 780, avatar: 'https://xsgames.co/randomusers/assets/avatars/male/6.jpg' }, 
+        { name: 'Mike L.', points: 710, avatar: 'https://xsgames.co/randomusers/assets/avatars/male/7.jpg' }, 
+        { name: 'Rasheed', points: 640, avatar: 'https://xsgames.co/randomusers/assets/avatars/male/1.jpg' }, 
+    ];
+    const allBadges = { 'first_climb': { emoji: '🏅', name: 'First Climb', desc: 'Take the stairs for the first time' }, 'mountain_goat': { emoji: '🧗', name: 'Mountain Goat', desc: 'Climb 100 floors' }, 'streak_week': { emoji: '⚡️', name: 'Streak Week', desc: 'Climb stairs 5 days in a row' }, 'sky_walker': { emoji: '🚀', name: 'Sky Walker', desc: 'Climb 500 floors' } };
     const rewardsData = [ { id: 'coffee1', name: 'Free Coffee', vendor: 'Campus Cafe', points: 200, icon: '☕' }, { id: 'sandwich1', name: '50% Off Sandwich', vendor: 'Main Canteen', points: 350, icon: '🥪' }, { id: 'meal1', name: 'Free Lunch Combo', vendor: 'Main Canteen', points: 1000, icon: '🍱' }, { id: 'smoothie1', name: 'BOGO Smoothie', vendor: 'Juice Bar', points: 400, icon: '🥤' } ];
     let impactChart = null;
 
@@ -447,38 +455,6 @@ document.addEventListener('DOMContentLoaded', function() {
             this.addRequest(from, to);
         }
         
-        calculateETA(newRequest) {
-            let tempElevator = JSON.parse(JSON.stringify(this.elevator));
-            let tempRequests = JSON.parse(JSON.stringify(this.requests));
-            tempRequests.push({ ...newRequest, waitTime: 0 });
-            let time = 0;
-            const MAX_TIME = 5000;
-            while(time < MAX_TIME) {
-                tempRequests.forEach(r => r.waitTime++);
-                const currentFloor = NUM_FLOORS - 1 - Math.round(tempElevator.y / this.FLOOR_HEIGHT);
-                if (tempRequests.every(r => r.from !== newRequest.from)) return Math.round(time / 60);
-                let targetFloor = this.algorithm(tempElevator, tempRequests);
-                if (targetFloor === -1 || targetFloor === undefined || targetFloor === currentFloor) {
-                    if (tempRequests.length === 0 && tempElevator.passengers.length === 0) break;
-                    const passengersToPick = tempRequests.filter(r => r.from === currentFloor);
-                    if(passengersToPick.length > 0) {
-                        tempElevator.passengers.push(...passengersToPick);
-                        tempRequests = tempRequests.filter(r => r.from !== currentFloor);
-                        time += DOOR_OPEN_DURATION;
-                        continue;
-                    } else break;
-                }
-                const travelFrames = Math.abs(targetFloor - currentFloor) * (this.FLOOR_HEIGHT / this.maxSpeed);
-                time += travelFrames + DOOR_OPEN_DURATION;
-                tempElevator.y = (NUM_FLOORS - 1 - targetFloor) * this.FLOOR_HEIGHT;
-                tempElevator.passengers = tempElevator.passengers.filter(p => p.to !== targetFloor);
-                const newPassengers = tempRequests.filter(r => r.from === targetFloor);
-                tempElevator.passengers.push(...newPassengers);
-                tempRequests = tempRequests.filter(r => r.from !== targetFloor);
-            }
-            return 99;
-        }
-
         gameLoop() {
             if (!this.isRunning) return;
             this.update();
@@ -531,30 +507,10 @@ document.addEventListener('DOMContentLoaded', function() {
         return bestTarget !== -1 ? bestTarget : elevator.currentFloor;
     }
 
-    // --- Setup and Event Listeners ---
-    function setupControls(prefix, sim) {
-        const fromSelect = document.getElementById(`${prefix}-from`), toSelect = document.getElementById(`${prefix}-to`), addBtn = document.getElementById(`add-${prefix}-btn`), etaDisplay = document.getElementById(`${prefix}-eta`);
-        if (!fromSelect || !toSelect || !addBtn || !etaDisplay) return;
-        fromSelect.innerHTML = ''; toSelect.innerHTML = '';
-        for (let i = NUM_FLOORS - 1; i >= 0; i--) {
-            const floorLabel = i === 0 ? 'G' : i;
-            fromSelect.innerHTML += `<option value="${i}">${floorLabel}</option>`;
-            toSelect.innerHTML += `<option value="${i}">${floorLabel}</option>`;
-        }
-        fromSelect.value = '0'; toSelect.value = '4';
-        addBtn.addEventListener('click', () => {
-            const from = parseInt(fromSelect.value), to = parseInt(toSelect.value);
-            if (from !== to) { etaDisplay.textContent = `${sim.calculateETA({ from, to })}s`; sim.addRequest(from, to); }
-        });
-    }
-    
     // --- Initialize Simulations ---
     const fcfsSim = new ElevatorSimulation('fcfs-canvas', fcfsAlgorithm);
     const scanSim = new ElevatorSimulation('scan-canvas', scanAlgorithm);
     const aiSim = new ElevatorSimulation('ai-canvas', aiAlgorithm);
-    setupControls('fcfs', fcfsSim);
-    setupControls('scan', scanSim);
-    setupControls('ai', aiSim);
     const initialRequests = [ { from: 4, to: 1 }, { from: 8, to: 2 }, { from: 1, to: 9 }, { from: 5, to: 0 }, ];
     initialRequests.forEach(req => { fcfsSim.addRequest(req.from, req.to); scanSim.addRequest(req.from, req.to); aiSim.addRequest(req.from, req.to); });
 
@@ -586,12 +542,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const appNavBtns = document.querySelectorAll('.app-nav-btn');
     const appPages = document.querySelectorAll('.app-page');
     const requestElevatorBtn = document.getElementById('request-elevator-btn');
-    const takeStairsBtn = document.getElementById('take-stairs-btn');
     const appIdleState = document.getElementById('app-idle-state');
     const appQueueState = document.getElementById('app-queue-state');
     const appEtaDisplay = document.getElementById('app-eta');
     const cancelRequestBtn = document.getElementById('cancel-request-btn');
     const appNotification = document.getElementById('app-notification');
+    const takeStairsBtn = document.getElementById('take-stairs-btn');
     let etaInterval;
 
     function showNotification(message, type = 'success') { 
@@ -605,10 +561,14 @@ document.addEventListener('DOMContentLoaded', function() {
     appNavBtns.forEach(btn => { 
         btn.addEventListener('click', () => { 
             const pageId = btn.dataset.page; 
-            appPages.forEach(p => p.classList.add('hidden')); 
-            document.getElementById(pageId).classList.remove('hidden'); 
-            appNavBtns.forEach(b => b.classList.replace('text-indigo-600', 'text-gray-500')); 
-            btn.classList.replace('text-gray-500', 'text-indigo-600'); 
+            appPages.forEach(p => p.classList.remove('active')); 
+            document.getElementById(pageId).classList.add('active'); 
+            appNavBtns.forEach(b => {
+                b.classList.remove('text-indigo-600');
+                b.classList.add('text-gray-500');
+            }); 
+            btn.classList.add('text-indigo-600');
+            btn.classList.remove('text-gray-500');
             
             if (pageId === 'app-challenge-page') renderChallengesPage();
             if (pageId === 'app-impact-page') renderImpactPage();
@@ -631,21 +591,22 @@ document.addEventListener('DOMContentLoaded', function() {
     function startEtaCountdown(seconds) { 
         let timeLeft = seconds; 
         const update = () => {
-            timeLeft--; 
-            const minutes = Math.floor(timeLeft / 60); 
-            const secs = timeLeft % 60; 
-            appEtaDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`; 
             if (timeLeft <= 0) { 
                 clearInterval(etaInterval); 
                 appQueueState.classList.add('hidden'); 
                 appIdleState.classList.remove('hidden'); 
                 showNotification("Your elevator has arrived!", 'success'); 
+                return;
             }
+            timeLeft--; 
+            const minutes = Math.floor(timeLeft / 60); 
+            const secs = timeLeft % 60; 
+            appEtaDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`; 
         };
         update();
         etaInterval = setInterval(update, 1000); 
     }
-
+    
     takeStairsBtn.addEventListener('click', () => {
         userData.points += 40;
         userData.floorsClimbed += 4;
@@ -658,60 +619,6 @@ document.addEventListener('DOMContentLoaded', function() {
             notificationText = "🏆 Badge Unlocked: Mountain Goat!";
         }
         showNotification(notificationText, 'success');
-    });
-
-    // --- Performance Chart ---
-    const performanceCtx = document.getElementById('performanceChart').getContext('2d');
-    new Chart(performanceCtx, {
-        type: 'bar',
-        data: {
-            labels: ['Average Wait Time (s)', 'Total Travel (floors)', 'Longest Single Wait (s)'],
-            datasets: [
-                {
-                    label: 'FCFS',
-                    data: [95, 150, 180],
-                    backgroundColor: 'rgba(239, 68, 68, 0.7)',
-                    borderColor: 'rgba(239, 68, 68, 1)',
-                    borderWidth: 1
-                },
-                {
-                    label: 'SCAN',
-                    data: [65, 110, 140],
-                    backgroundColor: 'rgba(251, 191, 36, 0.7)',
-                    borderColor: 'rgba(251, 191, 36, 1)',
-                    borderWidth: 1
-                },
-                {
-                    label: 'ElevateED AI',
-                    data: [25, 75, 45],
-                    backgroundColor: 'rgba(79, 70, 229, 0.7)',
-                    borderColor: 'rgba(79, 70, 229, 1)',
-                    borderWidth: 1
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            animation: {
-                duration: 1000,
-                easing: 'easeInOutQuart'
-            },
-            plugins: {
-                legend: { position: 'top', labels: { color: '#4b5563' } },
-                title: { display: true, text: 'Algorithm Performance Comparison (Simulated)', color: '#1f2937', font: { size: 16 } }
-            },
-            scales: {
-                y: { 
-                    beginAtZero: true,
-                    grid: { color: 'rgba(209, 213, 219, 0.5)' },
-                    ticks: { color: '#4b5563' }
-                },
-                x: {
-                    grid: { color: 'rgba(209, 213, 219, 0.5)' },
-                    ticks: { color: '#4b5563' }
-                }
-            }
-        }
     });
 
     function renderImpactPage() {
@@ -746,7 +653,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const rankEmoji = { 1: '🥇', 2: '🥈', 3: '🥉' };
             const entry = document.createElement('div');
             entry.className = `flex items-center p-2 rounded-lg ${isCurrentUser ? 'bg-indigo-100 border-2 border-indigo-500' : rankColors[rank] || 'bg-white'}`;
-            entry.innerHTML = `<span class="font-bold text-lg mr-3 w-6 text-center">${rankEmoji[rank] || rank + '.'}</span> <img src="https://i.pravatar.cc/32?u=${user.avatar}" class="w-8 h-8 rounded-full mr-3" onerror="this.onerror=null;this.src='https://placehold.co/32x32/E0E0E0/000000?text=${user.name[0]}';"> <span class="flex-grow ${isCurrentUser ? 'font-bold' : ''}">${isCurrentUser ? 'You' : user.name}</span> <span class="font-bold">${user.points.toLocaleString()} pts</span>`;
+            entry.innerHTML = `<span class="font-bold text-lg mr-3 w-6 text-center">${rankEmoji[rank] || rank + '.'}</span> <img src="${user.avatar}" class="w-8 h-8 rounded-full mr-3" onerror="this.onerror=null;this.src='https://placehold.co/32x32/E0E0E0/000000?text=${user.name[0]}';"> <span class="flex-grow ${isCurrentUser ? 'font-bold' : ''}">${isCurrentUser ? 'You' : user.name}</span> <span class="font-bold">${user.points.toLocaleString()} pts</span>`;
             container.appendChild(entry);
         });
     }
@@ -789,3 +696,4 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
+
